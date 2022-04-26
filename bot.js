@@ -144,13 +144,7 @@ client.on("interactionCreate", async interaction => {
   }
 
 
-  const connection = joinVoiceChannel({
-    adapterCreator: channel.guild.voiceAdapterCreator,
-    channelId: channel.id,
-    guildId: channel.guild.id,
-    selfDeaf: false,
-    selfMute: false
-  });
+
 
   if (interaction.commandName === `join`) {
     const embed = new MessageEmbed()
@@ -158,6 +152,13 @@ client.on("interactionCreate", async interaction => {
       .setTitle(`音楽bot`)
       .setDescription(`ボイスチャンネルに入りました`)
     interaction.reply({ embeds: [embed] });
+    const connection = joinVoiceChannel({
+      adapterCreator: channel.guild.voiceAdapterCreator,
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      selfDeaf: false,
+      selfMute: false
+    });
     return;
   }
   if (interaction.commandName === `delete`) {
@@ -171,6 +172,13 @@ client.on("interactionCreate", async interaction => {
       playlist[id].list = [];
       player.stop();
     } else {
+      const connection = joinVoiceChannel({
+        adapterCreator: channel.guild.voiceAdapterCreator,
+        channelId: channel.id,
+        guildId: channel.guild.id,
+        selfDeaf: false,
+        selfMute: false
+      });
       connection.destroy();
     }
     return;
@@ -202,6 +210,13 @@ client.on("interactionCreate", async interaction => {
       interaction.editReply({ embeds: [embed] });
       return;
     }
+    const connection = joinVoiceChannel({
+      adapterCreator: channel.guild.voiceAdapterCreator,
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      selfDeaf: false,
+      selfMute: false
+    });
     yts({ videoId: result }, async function (err, video) {
       if (err) {
         const embed = new MessageEmbed()
@@ -259,6 +274,13 @@ client.on("interactionCreate", async interaction => {
       interaction.editReply({ embeds: [embed] });
       return;
     }
+    const connection = joinVoiceChannel({
+      adapterCreator: channel.guild.voiceAdapterCreator,
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      selfDeaf: false,
+      selfMute: false
+    });
     yts({ listId: result }, async function (err, list) {
       if (err) {
         const embed = new MessageEmbed()
