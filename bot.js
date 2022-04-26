@@ -181,6 +181,14 @@ client.on("interactionCreate", async interaction => {
     let text = interaction.options.getString(`name`);
     if (interaction.options.getString(`name`).indexOf(`https://`) != 0) {
       result = await yts(text + " Music");
+      if (!result.videos[0]) {
+        const embed = new MessageEmbed()
+          .setColor('ffa500')
+          .setTitle(`音楽bot`)
+          .setDescription(`プレイリストが見つかりませんでした`)
+        interaction.editReply({ embeds: [embed] });
+        return;
+      }
       result = result.videos[0].videoId;
     } else {
       result = text.split(/watch\?v=|youtu.be\//)
@@ -230,6 +238,14 @@ client.on("interactionCreate", async interaction => {
     let text = interaction.options.getString(`name`);
     if (interaction.options.getString(`name`).indexOf(`https://`) != 0) {
       result = await yts(text + " Music");
+      if (!result.playlists[0]) {
+        const embed = new MessageEmbed()
+          .setColor('ffa500')
+          .setTitle(`音楽bot`)
+          .setDescription(`プレイリストが見つかりませんでした`)
+        interaction.editReply({ embeds: [embed] });
+        return;
+      }
       result = result.playlists[0].listId;
     } else {
       result = text.split(/&list=|\?list=/)
