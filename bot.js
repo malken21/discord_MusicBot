@@ -39,7 +39,7 @@ client.on('ready', () => {//コマンド生成
   },
   {
     name: "join",
-    description: "ボットをボイスチャンネルに入れる"
+    description: "ボットをボイスチャンネルに強制的に入れる"
   },
   {
     name: "stop",
@@ -47,7 +47,7 @@ client.on('ready', () => {//コマンド生成
   },
   {
     name: "delete",
-    description: "ボットをボイスチャンネルから退出させる"
+    description: "ボットをボイスチャンネルから強制的に退出させる"
   },
   {
     name: "list",
