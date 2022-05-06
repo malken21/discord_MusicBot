@@ -38,6 +38,10 @@ client.on('ready', () => {//コマンド生成
     description: "今再生している音楽をスキップ"
   },
   {
+    name: "loop",
+    description: "ループ再生の切り替え"
+  },
+  {
     name: "join",
     description: "ボットをボイスチャンネルに強制的に入れる"
   },
@@ -76,6 +80,34 @@ client.on("interactionCreate", async interaction => {
 
 
 
+  if (interaction.commandName === `loop`) {
+    if (!playlist[id]) {
+      const embed = new MessageEmbed()
+        .setColor('ffa500')
+        .setTitle(`音楽bot`)
+        .setDescription(`音楽が再生されていません`)
+      interaction.reply({ embeds: [embed] });
+      return;
+    } else {
+      if (playlist[id].loop) {
+        playlist[id].loop = false;
+        const embed = new MessageEmbed()
+          .setColor('ffa500')
+          .setTitle(`音楽bot`)
+          .setDescription(`ループ再生OFF`)
+        interaction.reply({ embeds: [embed] });
+        return;
+      } else {
+        playlist[id].loop = true;
+        const embed = new MessageEmbed()
+          .setColor('ffa500')
+          .setTitle(`音楽bot`)
+          .setDescription(`ループ再生ON`)
+        interaction.reply({ embeds: [embed] });
+        return;
+      }
+    }
+  }
   if (interaction.commandName === `skip`) {
     if (!playlist[id]) {
       const embed = new MessageEmbed()
@@ -238,6 +270,7 @@ client.on("interactionCreate", async interaction => {
       if (!playlist[id]) {
         playlist[id] = {};
         playlist[id].list = [];
+        playlist[id].loop = false;
         playlist[id].list.push({ "videoId": video.videoId });
         connection.subscribe(player);
         play(id, connection, interaction);
@@ -299,6 +332,7 @@ client.on("interactionCreate", async interaction => {
       if (!playlist[id]) {
         playlist[id] = {};
         playlist[id].list = [];
+        playlist[id].loop = false;
         for (let loop = 0; loop < list.videos.length; loop++) {
           playlist[id].list.push({ "videoId": list.videos[loop].videoId });
         }
@@ -332,7 +366,9 @@ async function play(id, connection, interaction) {
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
-    playlist[id].list.shift();
+    if (!playlist[id].loop) {
+      playlist[id].list.shift();
+    }
     if (playlist[id].list.length == 0) {
       client.user.setActivity();
       connection.destroy();
