@@ -378,7 +378,7 @@ async function play(id, connection, interaction) {
 
     if (playlist[id].loop) {
       if (interaction.guild.channels.cache.get(playlist[id].channelId).members.size == 1) {
-        playlist[id].list.shift();
+        playlist[id].list = [];
       }
     } else {
       playlist[id].list.shift();
