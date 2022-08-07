@@ -1,0 +1,8 @@
+{
+  "TOKEN": "BotのToken",
+  "ServerID": "サーバーID",
+  "GAS": "GASのURL",
+  "VisionchannelId": [
+    "all"
+  ]
+}
