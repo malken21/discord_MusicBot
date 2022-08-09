@@ -1,4 +1,5 @@
 const { Client, Intents } = require("discord.js");
+const request = require("request");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, 'GUILD_VOICE_STATES'] });
 
 const Config = require("./Config.json");
