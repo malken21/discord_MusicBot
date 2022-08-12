@@ -1,5 +1,4 @@
 const { Client, Intents } = require("discord.js");
-const request = require("request");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, 'GUILD_VOICE_STATES'] });
 
 const Config = require("./Config.json");
@@ -17,7 +16,7 @@ client.on('ready', () => {
   console.log(`login!!(${client.user.tag})`);
 });
 
-client.on("interactionCreate", async interaction => {
+client.on("interactionCreate", interaction => {
   try {
     if (interaction.isCommand()) {
       main.onCommand(interaction);

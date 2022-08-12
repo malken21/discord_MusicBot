@@ -164,7 +164,7 @@ async function YouTube() {
     player.play(resource);
 }
 async function File() {
-    const stream = req.stream(list[0].url)
+    const stream = await req.stream(list[0].url)
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);

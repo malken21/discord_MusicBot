@@ -14,8 +14,7 @@
     "discord.js": "^13.9.2",
     "eastasianwidth": "^0.2.0",
     "ffmpeg-static": "^5.0.2",
-    "request": "^2.88.2",
     "tweetnacl": "^1.0.3",
-    "ytdl-core": "^4.11.0"
+    "ytdl-core": "^4.9.1"
   }
 }
