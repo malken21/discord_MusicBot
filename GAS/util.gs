@@ -1,13 +1,13 @@
 //検索 動画
 const searchVideo = (searchText) => {
-  const youtube = YouTube.Search.list("snippet", { q: searchText, maxResults: 1, type: "video" });
+  const youtube = YouTube.Search.list("snippet", { q: searchText, maxResults: 1, safeSearch: "strict", type: "video" });
   const item = youtube.items[0];
   return { main: { id: item.id.videoId, title: item.snippet.title }, data: { thumbnail: item.snippet.thumbnails.high.url } };
 }
 
 //検索 プレイリスト
 const searchList = (searchText) => {
-  const youtube = YouTube.Search.list("snippet", { q: searchText, maxResults: 1, type: "playlist" });
+  const youtube = YouTube.Search.list("snippet", { q: searchText, maxResults: 1, safeSearch: "strict", type: "playlist" });
   const item = youtube.items[0];
   return getList(item.id.playlistId);
 }
