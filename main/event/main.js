@@ -158,7 +158,11 @@ function remove() {
     ChannelID = undefined;
 }
 async function YouTube() {
-    const stream = ytdl(list[0].id, { filter: "audioonly", highWaterMark: 1 << 62 });
+    const stream = ytdl(list[0].id, {
+        filter: "audioonly",
+        quality: 'highestaudio',
+        highWaterMark: 1 << 25
+    });
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
