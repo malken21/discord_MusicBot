@@ -271,6 +271,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
         const URLdata = url.parse(text);
         switch (URLdata.host) {
             case "youtube.com":
+            case "www.youtube.com":
             case "youtu.be":
                 const split = text.split(/watch\?v=|youtu.be\//)
                 if (!split[1]) {

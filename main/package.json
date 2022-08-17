@@ -15,6 +15,6 @@
     "eastasianwidth": "^0.2.0",
     "ffmpeg-static": "^5.0.2",
     "tweetnacl": "^1.0.3",
-    "ytdl-core": "^4.9.1"
+    "ytdl-core": "^4.11.0"
   }
 }
