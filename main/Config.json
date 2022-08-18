@@ -1,8 +1,9 @@
 {
-  "TOKEN": "BotのToken",
-  "ServerID": "サーバーID",
-  "GAS": "GASのURL",
+  "TOKEN": "TOKEN",
+  "ServerID": "Discord Server ID",
+  "GAS": "GAS",
   "VisionchannelId": [
     "all"
-  ]
+  ],
+  "pythonPath": "python3"
 }

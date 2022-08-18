@@ -1,5 +1,4 @@
 const send = require('./send');
-const eaw = require('eastasianwidth');
 
 exports.data = [{
     name: "play",
@@ -50,12 +49,12 @@ exports.data = [{
     type: "MESSAGE"
 }];
 
-exports.play = (result_GV, interaction) => {
-    const title = result_GV.getVideo.main.title;
-    const id = result_GV.getVideo.main.id;
-    const thumbnail = result_GV.getVideo.data.thumbnail;
-    const duration = result_GV.getVideo.data.duration;
-    send.play(title, id, thumbnail, duration, interaction);
+exports.play = (Video, interaction) => {
+    const title = Video.main.title;
+    const id = Video.main.id;
+    const thumbnail = Video.data.thumbnail;
+    const duration = Video.data.duration;
+    send.play(title, `https://youtube.com/watch?v=${id}`, thumbnail, `${text.PT(duration)}`, interaction);
 }
 exports.playlist = (result, interaction) => {
     if (result.getList) {

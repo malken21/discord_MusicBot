@@ -13,6 +13,7 @@ let ChannelID = undefined;
 const req = require('../util/request');
 const command = require('../util/command');
 const send = require('../util/send');
+const text = require('../util/text');
 
 const player = createAudioPlayer();
 
@@ -21,7 +22,6 @@ exports.ready = (data) => {
 }
 
 const url = require('url');
-
 
 exports.onCommand = (interaction) => {
     const channel = interaction.member.voice.channel;
@@ -73,15 +73,15 @@ exports.onContextMenu = (interaction) => {
 async function PlayFileCTM(channel, interaction) {
     const message = interaction.targetMessage;
 
-    let text = "";
+    let name = "";
 
     if (message.attachments.length !== 0) {
         let data = [];
         message.attachments.forEach((value) => {
             if (["audio/mpeg", "audio/ogg", "audio/x-wav", "video/mp4"].includes(value.contentType)) {
                 const message = `https://discord.com/channels/${interaction.guildId}/${interaction.channelId}/${interaction.targetId}`
-                data.push({ title: value.name, url: value.url, message: message, type: "File" });
-                text = `${text}\n[${value.name}](${message})を再生します`
+                data.push({ url: value.url, title: value.name, message: message, type: "File" });
+                name = `${name}\n[${value.name}](${message})を再生します`
             }
         });
         if (data.length === 0) {
@@ -93,7 +93,7 @@ async function PlayFileCTM(channel, interaction) {
             join(channel);
             play(interaction);
         }
-        send.playfile(text, interaction);
+        send.playfile(name, interaction);
     }
 }
 
@@ -107,6 +107,9 @@ async function play(interaction) {//----------メイン関数----------//
                 break;
             case "File":
                 File();
+                break;
+            case "NicoVideo":
+                NicoVideo();
                 break;
         }
         client.user.setActivity(list[0].title, { type: "LISTENING" });
@@ -128,7 +131,8 @@ async function play(interaction) {//----------メイン関数----------//
         }
     } catch (error) {
         console.log(error);
-        client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${list[0].title}`)
+
+        client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${text.ListURL(list[0])}`)
         list.shift();
         if (list.length === 0) {
             reset();
@@ -157,7 +161,7 @@ function remove() {
     VoiceChannel = undefined;
     ChannelID = undefined;
 }
-async function YouTube() {
+async function YouTube() {//----------YouTube----------//
     const stream = ytdl(list[0].id, {
         filter: "audioonly",
         quality: 'highestaudio',
@@ -167,13 +171,19 @@ async function YouTube() {
     VoiceChannel.subscribe(player);
     player.play(resource);
 }
-async function File() {
-    const stream = await req.stream(list[0].url)
+async function File() {//----------ファイル----------//
+    const stream = await req.stream(list[0].url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
 }
-
+async function NicoVideo() {//----------ニコニコ----------//
+    const url = await req.getNicoVideo(list[0].url);
+    const stream = await req.stream(url);
+    const resource = createAudioResource(stream);
+    VoiceChannel.subscribe(player);
+    player.play(resource);
+}
 //----------スラッシュコマンド----------//
 
 function LoopCMD(interaction) {//-----loop-----コマンド//
@@ -224,12 +234,16 @@ async function ListCMD(interaction) {//-----list-----コマンド//
                     if (result_GV.error) {
                         break;//エラー(修正予定)
                     }
-                    name = `${name}\n[${send.embedTitle(result_GV.getVideo.main.title)}](https://youtube.com/watch?v=${result_GV.getVideo.main.id})`;
-                    time = `${time}\n${send.PT(result_GV.getVideo.data.duration)}`;
+                    name = `${name}\n[${text.embedTitle(item.title)}](https://youtube.com/watch?v=${item.id})`;
+                    time = `${time}\n${text.PT(result_GV.getVideo.data.duration)}`;
                     break;
                 case "File":
-                    name = `${name}\n[${send.embedTitle(item.title)}](${item.message})`;
+                    name = `${name}\n[${text.embedTitle(item.title)}](${item.message})`;
                     time = `${time}\n\u200B`;
+                    break;
+                case "NicoVideo":
+                    name = `${name}\n[${text.embedTitle(item.title)}](${item.url})`;
+                    time = `${time}\n${item.duration}`;
                     break;
             }
         }
@@ -252,9 +266,9 @@ function DeleteCMD(channel, interaction) {//-----delete-----コマンド//
 }
 async function PlayCMD(channel, interaction) {//-----play-----コマンド//
     await interaction.deferReply();
-    const text = interaction.options.getString(`name`);
-    if (text.indexOf(`https://`) != 0) {
-        const result_SV = await req.getGAS("searchVideo", text);
+    const name = interaction.options.getString(`name`);
+    if (name.indexOf(`https://`) != 0) {
+        const result_SV = await req.getGAS("searchVideo", name);
         if (result_SV.error) {
             send.editReply("音楽が見つかりませんでした", interaction);
             return;
@@ -270,14 +284,14 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
             join(channel);
             play(interaction);
         }
-        command.play(result_GV, interaction);
+        command.play(result_GV.getVideo, interaction);
     } else {
-        const URLdata = url.parse(text);
+        const URLdata = url.parse(name);
         switch (URLdata.host) {
             case "youtube.com":
             case "www.youtube.com":
             case "youtu.be":
-                const split = text.split(/watch\?v=|youtu.be\//)
+                const split = name.split(/watch\?v=|youtu.be\//)
                 if (!split[1]) {
                     send.editReply("そのURLは再生できません", interaction);
                 } else {
@@ -293,26 +307,41 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                         join(channel);
                         play(interaction);
                     }
-                    command.play(result_GV, interaction);
+                    command.play(result_GV.getVideo, interaction);
                 }
-                break;
-            default:
-                const data = { title: text, url: text, message: text, type: "File" };
-                list.push(data);//リストに追加
+                return;
+            case "www.nicovideo.jp"://----------ニコニコ----------//
+
+                const result = await req.getNicoInfo(URLdata.pathname.split("/")[2]);
+                if (result['$'].status != "ok") {
+                    send.editReply("そのURLは再生できません", interaction);
+                    return;
+                }
+                const thumb = result.thumb;
+
+                list.push({ url: thumb.watch_url, title: thumb.title, duration: thumb.length, type: "NicoVideo" });//リストに追加
                 if (VoiceChannel === undefined) {
                     join(channel);
                     play(interaction);
                 }
-                send.editReply(`[${text}](${text})を再生します`, interaction);
+                send.play(thumb.title, thumb.watch_url, thumb.thumbnail_url, thumb.length, interaction);
+                return;
 
+            default:
+                list.push({ url: name, title: name, message: name, type: "File" });//リストに追加
+                if (VoiceChannel === undefined) {
+                    join(channel);
+                    play(interaction);
+                }
+                send.editReply(`[${name}](${name})を再生します`, interaction);
         }
     }
 }
 async function PlaylistCMD(channel, interaction) {//-----playlist-----コマンド//
     await interaction.deferReply();
-    let text = interaction.options.getString(`name`);
-    if (text.indexOf(`https://`) != 0) {
-        let result_SL = await req.getGAS("searchList", text);
+    let name = interaction.options.getString(`name`);
+    if (name.indexOf(`https://`) != 0) {
+        let result_SL = await req.getGAS("searchList", name);
         if (result_SL.error) {
             send.editReply("プレイリストが見つかりませんでした", interaction);
             return;
@@ -327,7 +356,7 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
         }
         command.playlist(result_SL, interaction);
     } else {
-        let data = text.split(/&list=|\?list=/);
+        let data = name.split(/&list=|\?list=/);
         if (data[1]) data = data[1].slice(0, 34);
         if (!data) {
             send.editReply("プレイリストが見つかりませんでした", interaction);
