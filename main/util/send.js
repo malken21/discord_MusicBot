@@ -1,6 +1,4 @@
 const { MessageEmbed } = require("discord.js");
-const text = require('../util/text');
-
 
 exports.reply = (text, interaction) => {
     const embed = new MessageEmbed()
