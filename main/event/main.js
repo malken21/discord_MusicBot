@@ -118,6 +118,10 @@ async function play(interaction) {//----------メイン関数----------//
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
+        if (list[0].type === "NicoVideo") {
+            await nico.end();
+        }
+
         if (loop) {
             if (interaction.guild.channels.cache.get(ChannelID).members.size === 1) {
                 list = [];
@@ -184,9 +188,6 @@ async function NicoVideo() {//----------ニコニコ----------//
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
-    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-    await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
-    nico.end();
 }
 //----------スラッシュコマンド----------//
 

@@ -19,9 +19,15 @@ exports.start = (url) => {//----------ニコニコ動画 開始----------//
         pyshell.send({
             url: url
         });
-    })
+    });
 }
 
 exports.end = () => {//----------ニコニコ動画 終了----------//
-    pyshell.send({});
+    return new Promise((resolve) => {
+        pyshell.on('message', function (data) {
+            resolve(data);
+            pyshell = undefined;
+        });
+        pyshell.send({});
+    });
 }
