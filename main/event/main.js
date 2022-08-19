@@ -100,6 +100,8 @@ async function PlayFileCTM(channel, interaction) {
 
 //----------メイン稼働部----------//
 
+let ErrorCount = 0;//エラー回数監視
+
 async function play(interaction) {//----------メイン関数----------//
     try {
         switch (list[0].type) {
@@ -118,9 +120,7 @@ async function play(interaction) {//----------メイン関数----------//
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
-        if (list[0].type === "NicoVideo") {
-            await nico.end();
-        }
+        ErrorCount = 0;
 
         if (loop) {
             if (interaction.guild.channels.cache.get(ChannelID).members.size === 1) {
@@ -136,6 +136,15 @@ async function play(interaction) {//----------メイン関数----------//
         }
     } catch (error) {
         console.log(error);
+
+        ErrorCount++;
+        if (ErrorCount <= 3) {
+            play(interaction);
+            return;
+        };
+
+        //-----3回以上連続でエラーだったらエラー通知-----//
+        ErrorCount = 0;
 
         client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${text.ListURL(list[0])}`)
         list.shift();
@@ -188,6 +197,9 @@ async function NicoVideo() {//----------ニコニコ----------//
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
+    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+    await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
+    nico.end();
 }
 //----------スラッシュコマンド----------//
 
