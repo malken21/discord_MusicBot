@@ -28,7 +28,3 @@ client.on("interactionCreate", interaction => {
     console.log(error);
   }
 });
-//'https://www.nicovideo.jp/watch/sm35213219'
-
-// {"url": "https://www.nicovideo.jp/watch/sm35213219"}
-
