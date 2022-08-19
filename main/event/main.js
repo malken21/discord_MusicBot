@@ -138,7 +138,7 @@ async function play(interaction) {//----------メイン関数----------//
         console.log(error);
 
         ErrorCount++;
-        if (ErrorCount <= 3) {
+        if (ErrorCount <= 2) {
             play(interaction);
             return;
         };
