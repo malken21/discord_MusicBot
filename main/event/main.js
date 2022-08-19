@@ -11,9 +11,10 @@ let VoiceChannel = undefined;//joinVoiceChannel
 let ChannelID = undefined;
 
 const req = require('../util/request');
-const command = require('../util/command');
+const cmd = require('../util/command');
 const send = require('../util/send');
 const text = require('../util/text');
+const nico = require('./NicoVideo');
 
 const player = createAudioPlayer();
 
@@ -178,11 +179,14 @@ async function File() {//----------ファイル----------//
     player.play(resource);
 }
 async function NicoVideo() {//----------ニコニコ----------//
-    const url = await req.getNicoVideo(list[0].url);
-    const stream = await req.stream(url);
+    const json = await nico.start(list[0].url);
+    const stream = await req.stream(json.url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
+    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+    await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
+    nico.end();
 }
 //----------スラッシュコマンド----------//
 
@@ -284,7 +288,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
             join(channel);
             play(interaction);
         }
-        command.play(result_GV.getVideo, interaction);
+        cmd.play(result_GV.getVideo, interaction);
     } else {
         const URLdata = url.parse(name);
         switch (URLdata.host) {
@@ -307,12 +311,12 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                         join(channel);
                         play(interaction);
                     }
-                    command.play(result_GV.getVideo, interaction);
+                    cmd.play(result_GV.getVideo, interaction);
                 }
                 return;
             case "www.nicovideo.jp"://----------ニコニコ----------//
 
-                const result = await req.getNicoInfo(URLdata.pathname.split("/")[2]);
+                const result = await req.NVInfo(URLdata.pathname.split("/")[2]);
                 if (result['$'].status != "ok") {
                     send.editReply("そのURLは再生できません", interaction);
                     return;
@@ -354,7 +358,7 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
             join(channel);
             play(interaction);
         }
-        command.playlist(result_SL, interaction);
+        cmd.playlist(result_SL, interaction);
     } else {
         let data = name.split(/&list=|\?list=/);
         if (data[1]) data = data[1].slice(0, 34);
@@ -375,6 +379,6 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
             join(channel);
             play(interaction);
         }
-        command.playlist(result_GL, interaction);
+        cmd.playlist(result_GL, interaction);
     }
 }
