@@ -182,20 +182,20 @@ async function YouTube() {//----------YouTube----------//
         highWaterMark: 1 << 25
     });
     const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
+    await VoiceChannel.subscribe(player);
     player.play(resource);
 }
 async function File() {//----------ファイル----------//
     const stream = await req.stream(list[0].url);
     const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
+    await VoiceChannel.subscribe(player);
     player.play(resource);
 }
 async function NicoVideo() {//----------ニコニコ----------//
     const json = await nico.start(list[0].url);
     const stream = await req.stream(json.url);
     const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
+    await VoiceChannel.subscribe(player);
     player.play(resource);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
