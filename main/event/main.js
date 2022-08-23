@@ -117,15 +117,7 @@ async function play(interaction) {//----------メイン関数----------//
         }
         client.user.setActivity(list[0].title, { type: "LISTENING" });
 
-        let isPlaying = false;
-
-        setTimeout(() => {
-            if (!isPlaying) throw new Error("Timeout")
-        }, 5000);
-
-
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-        isPlaying = true;
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
         ErrorCount = 0;
@@ -192,12 +184,26 @@ async function YouTube() {//----------YouTube----------//
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
+
+    let isPlaying = false;
+    setTimeout(() => {
+        if (!isPlaying) YouTube();
+    }, 3000);
+    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+    isPlaying = true;
 }
 async function File() {//----------ファイル----------//
     const stream = await req.stream(list[0].url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
+
+    let isPlaying = false;
+    setTimeout(() => {
+        if (!isPlaying) File();
+    }, 3000);
+    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+    isPlaying = true;
 }
 async function NicoVideo() {//----------ニコニコ----------//
     const json = await nico.start(list[0].url);
@@ -205,7 +211,14 @@ async function NicoVideo() {//----------ニコニコ----------//
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
+
+    let isPlaying = false;
+    setTimeout(() => {
+        if (!isPlaying) NicoVideo();
+    }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+    isPlaying = true;
+
     await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
     nico.end();
 }
