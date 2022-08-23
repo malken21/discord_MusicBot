@@ -187,7 +187,9 @@ async function YouTube() {//----------YouTube----------//
 
     let isPlaying = false;
     setTimeout(() => {
-        if (!isPlaying) YouTube();
+        if (!isPlaying) {
+            YouTube();
+        }
     }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     isPlaying = true;
@@ -200,7 +202,9 @@ async function File() {//----------ファイル----------//
 
     let isPlaying = false;
     setTimeout(() => {
-        if (!isPlaying) File();
+        if (!isPlaying) {
+            File();
+        }
     }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     isPlaying = true;
@@ -214,7 +218,10 @@ async function NicoVideo() {//----------ニコニコ----------//
 
     let isPlaying = false;
     setTimeout(() => {
-        if (!isPlaying) NicoVideo();
+        if (!isPlaying) {
+            NicoVideo();
+            nico.end()
+        };
     }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     isPlaying = true;
