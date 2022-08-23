@@ -131,6 +131,7 @@ async function play(interaction) {//----------メイン関数----------//
         if (list.length === 0) {
             reset();
         } else {
+            await delay(1000);
             play(interaction);
         }
     } catch (error) {
@@ -138,6 +139,7 @@ async function play(interaction) {//----------メイン関数----------//
 
         ErrorCount++;
         if (ErrorCount <= 2) {
+            await delay(1000);
             play(interaction);
             return;
         };
@@ -173,6 +175,11 @@ function remove() {
     VoiceChannel.destroy();
     VoiceChannel = undefined;
     ChannelID = undefined;
+}
+function delay(ms) {//-----待機-----//
+    return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+    });
 }
 async function YouTube() {//----------YouTube----------//
     const stream = await yt.stream(list[0].id);
