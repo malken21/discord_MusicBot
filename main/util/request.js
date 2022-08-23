@@ -17,7 +17,6 @@ exports.getGAS = (type, text) => {//----------Google Apps Script に接続------
                     resolve(JSON.parse(data));
                 });
             });
-
         });
     });
 }
@@ -28,8 +27,8 @@ exports.stream = (url) => {//----------ストリーム----------//
             highWaterMark: 53
         }, (res) => {
             resolve(res);
-        })
-    })
+        });
+    });
 }
 
 exports.NVInfo = async (id) => {//----------ニコニコ動画の詳細情報を取得----------//

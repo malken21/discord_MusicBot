@@ -1,8 +1,6 @@
 
 const { entersState, AudioPlayerStatus, createAudioResource, createAudioPlayer, joinVoiceChannel, StreamType } = require('@discordjs/voice');
 
-const ytdl = require("ytdl-core");
-
 let client;
 
 let list = [];//再生する曲一覧
@@ -15,6 +13,7 @@ const cmd = require('../util/command');
 const send = require('../util/send');
 const text = require('../util/text');
 const nico = require('./NicoVideo');
+const yt = require('./YouTube');
 
 const player = createAudioPlayer();
 
@@ -176,40 +175,16 @@ function remove() {
     ChannelID = undefined;
 }
 async function YouTube() {//----------YouTube----------//
-    const stream = ytdl(list[0].id, {
-        filter: "audioonly",
-        quality: 'highestaudio',
-        highWaterMark: 1 << 25
-    });
+    const stream = await yt.stream(list[0].id);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
-
-    let isPlaying = false;
-    setTimeout(() => {
-        if (!isPlaying) {
-            console.log("Timeout");
-            YouTube();
-        }
-    }, 3000);
-    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-    isPlaying = true;
 }
 async function File() {//----------ファイル----------//
     const stream = await req.stream(list[0].url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
     player.play(resource);
-
-    let isPlaying = false;
-    setTimeout(() => {
-        if (!isPlaying) {
-            console.log("Timeout");
-            File();
-        }
-    }, 3000);
-    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-    isPlaying = true;
 }
 async function NicoVideo() {//----------ニコニコ----------//
     const json = await nico.start(list[0].url);
@@ -218,17 +193,7 @@ async function NicoVideo() {//----------ニコニコ----------//
     VoiceChannel.subscribe(player);
     player.play(resource);
 
-    let isPlaying = false;
-    setTimeout(() => {
-        if (!isPlaying) {
-            nico.end();
-            console.log("Timeout");
-            NicoVideo();
-        };
-    }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-    isPlaying = true;
-
     await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
     nico.end();
 }
@@ -339,6 +304,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
             case "youtube.com":
             case "www.youtube.com":
             case "youtu.be":
+            case "music.youtube.com":
                 const split = name.split(/watch\?v=|youtu.be\//)
                 if (!split[1]) {
                     send.editReply("そのURLは再生できません", interaction);
