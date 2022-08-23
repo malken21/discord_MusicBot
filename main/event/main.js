@@ -188,6 +188,7 @@ async function YouTube() {//----------YouTube----------//
     let isPlaying = false;
     setTimeout(() => {
         if (!isPlaying) {
+            console.log("Timeout");
             YouTube();
         }
     }, 3000);
@@ -203,6 +204,7 @@ async function File() {//----------ファイル----------//
     let isPlaying = false;
     setTimeout(() => {
         if (!isPlaying) {
+            console.log("Timeout");
             File();
         }
     }, 3000);
@@ -219,8 +221,9 @@ async function NicoVideo() {//----------ニコニコ----------//
     let isPlaying = false;
     setTimeout(() => {
         if (!isPlaying) {
+            nico.end();
+            console.log("Timeout");
             NicoVideo();
-            nico.end()
         };
     }, 3000);
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
