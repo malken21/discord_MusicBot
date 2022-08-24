@@ -308,7 +308,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
     } else {
         const URLdata = url.parse(name);
         switch (URLdata.host) {
-            case "youtube.com":
+            case "youtube.com"://----------YouTube----------//
             case "www.youtube.com":
             case "youtu.be":
             case "music.youtube.com":
@@ -332,8 +332,17 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                 }
                 return;
             case "www.nicovideo.jp"://----------ニコニコ----------//
+            case "nicovideo.jp":
+            case "nico.ms":
 
-                const result = await req.NVInfo(URLdata.pathname.split("/")[2]);
+                let result;
+                if (URLdata.host === "nico.ms") {
+                    result = await req.NVInfo(URLdata.pathname.split("/")[1]);
+                } else {
+                    result = await req.NVInfo(URLdata.pathname.split("/")[2]);
+                }
+
+
                 if (result['$'].status != "ok") {
                     send.editReply("そのURLは再生できません", interaction);
                     return;
