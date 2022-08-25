@@ -4,3 +4,6 @@
 Discord.js V13
 <br>
 Node.js
+<br>
+python3
+<br>
