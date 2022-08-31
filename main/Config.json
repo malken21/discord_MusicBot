@@ -2,8 +2,6 @@
   "TOKEN": "TOKEN",
   "ServerID": "Discord Server ID",
   "GAS": "GAS",
-  "VisionchannelId": [
-    "all"
-  ],
+  "Deny_ChannelId": [],
   "pythonPath": "python3"
 }

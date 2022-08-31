@@ -46,17 +46,17 @@ exports.playlist = (title, id, thumbnail, interaction) => {
 }
 
 exports.playfile = (text, interaction) => {
-    if (Config.VisionchannelId.includes("all")) {
-        const embed = new MessageEmbed()
-            .setColor('ffa500')
-            .setTitle(`音楽bot`)
-            .setDescription(text)
-        interaction.reply({ embeds: [embed], ephemeral: false });
-    } else {
-        const embed = new MessageEmbed()
-            .setColor('ffa500')
-            .setTitle(`音楽bot`)
-            .setDescription(text)
-        interaction.reply({ embeds: [embed], ephemeral: !Config.VisionchannelId.includes(interaction.channelId) });
-    }
+    const embed = new MessageEmbed()
+        .setColor('ffa500')
+        .setTitle(`音楽bot`)
+        .setDescription(text)
+    interaction.reply({ embeds: [embed] });
+}
+
+exports.private = (text, interaction) => {
+    const embed = new MessageEmbed()
+        .setColor('ffa500')
+        .setTitle(`音楽bot`)
+        .setDescription(text)
+    interaction.reply({ embeds: [embed], ephemeral: true });
 }

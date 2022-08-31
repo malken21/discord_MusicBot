@@ -6,6 +6,7 @@ const Config = require("./Config.json");
 
 const main = require('./event/main');
 const command = require('./util/command');
+const send = require('./util/send');
 
 
 client.login(Config.TOKEN);
@@ -17,6 +18,10 @@ client.on('ready', () => {
 });
 
 client.on("interactionCreate", interaction => {
+  if (Config.Deny_ChannelId.includes(interaction.channelId)) {
+    send.private("このチャンネルでは実行できません", interaction)
+    return;
+  }
   try {
     if (interaction.isCommand()) {
       main.onCommand(interaction);

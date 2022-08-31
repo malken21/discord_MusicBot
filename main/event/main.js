@@ -114,7 +114,10 @@ async function play(interaction) {//----------メイン関数----------//
                 NicoVideo();
                 break;
         }
-        client.user.setActivity(list[0].title, { type: "LISTENING" });
+        client.user.setActivity(list[0].title, {
+            type: "STREAMING",
+            url: "https://www.youtube.com/watch?v="
+        });
 
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
