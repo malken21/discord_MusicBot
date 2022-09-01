@@ -17,6 +17,6 @@
     "python-shell": "^3.0.1",
     "tweetnacl": "^1.0.3",
     "xmljson": "^0.2.0",
-    "ytdl-core": "^4.11.1"
+    "ytdl-core": "^4.10.0"
   }
 }
