@@ -1,3 +1,5 @@
+console.log("load");
+
 const { Client, Intents } = require("discord.js");
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, 'GUILD_VOICE_STATES'] });
 
@@ -8,13 +10,14 @@ const main = require('./event/main');
 const command = require('./util/command');
 const send = require('./util/send');
 
+console.log("start");
 
 client.login(Config.TOKEN);
 
 client.on('ready', () => {
   client.application.commands.set(command.data, Config.ServerID);//コマンド生成
   main.ready(client)
-  console.log(`login!!(${client.user.tag})`);
+  console.log(`login: (${client.user.tag})`);
 });
 
 client.on("interactionCreate", interaction => {

@@ -1,11 +1,9 @@
 const { PythonShell } = require('python-shell');//Python実行ライブラリ
 
-const Config = require('../Config.json');
-
 const options = {
     mode: 'json',
     pythonOptions: ['-u'],
-    pythonPath: Config.pythonPath
+    pythonPath: require('../Config.json').pythonPath
 }
 
 let pyshell;

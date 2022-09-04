@@ -12,9 +12,9 @@ const req = require('../util/request');
 const cmd = require('../util/command');
 const send = require('../util/send');
 const text = require('../util/text');
-const nico = require('./NicoVideo');
+const nv = require('./NicoVideo');
 const yt = require('./YouTube');
-
+const sc = require('./SoundCloud');
 const player = createAudioPlayer();
 
 exports.ready = (data) => {
@@ -113,6 +113,9 @@ async function play(interaction) {//----------メイン関数----------//
             case "NicoVideo":
                 NicoVideo();
                 break;
+            case "SoundCloud":
+                SoundCloud();
+                break;
         }
         client.user.setActivity(list[0].title, {
             type: "STREAMING",
@@ -197,7 +200,7 @@ async function File() {//----------ファイル----------//
     player.play(resource);
 }
 async function NicoVideo() {//----------ニコニコ----------//
-    const json = await nico.start(list[0].url);
+    const json = await nv.start(list[0].url);
     const stream = await req.stream(json.url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);
@@ -205,7 +208,13 @@ async function NicoVideo() {//----------ニコニコ----------//
 
     await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
     await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
-    nico.end();
+    nv.end();
+}
+async function SoundCloud() {
+    const stream = await sc.stream(list[0].url);
+    const resource = createAudioResource(stream);
+    VoiceChannel.subscribe(player);
+    player.play(resource);
 }
 //----------スラッシュコマンド----------//
 
@@ -265,6 +274,10 @@ async function ListCMD(interaction) {//-----list-----コマンド//
                     time = `${time}\n\u200B`;
                     break;
                 case "NicoVideo":
+                    name = `${name}\n[${text.embedTitle(item.title)}](${item.url})`;
+                    time = `${time}\n${item.duration}`;
+                    break;
+                case "SoundCloud":
                     name = `${name}\n[${text.embedTitle(item.title)}](${item.url})`;
                     time = `${time}\n${item.duration}`;
                     break;
@@ -360,6 +373,20 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                 send.play(thumb.title, thumb.watch_url, thumb.thumbnail_url, thumb.length, interaction);
                 return;
 
+
+            case "soundcloud.com":
+                const info = await sc.info(name);
+                if (info) {
+                    list.push({ url: name, title: info.title, duration: info.duration, type: "SoundCloud" });
+                    if (VoiceChannel === undefined) {
+                        join(channel);
+                        play(interaction);
+                    }
+                    send.play(info.title, name, info.thumbnail, info.duration, interaction);
+                } else {
+                    send.editReply("そのURLは再生できません", interaction);
+                }
+                return;
             default:
                 list.push({ url: name, title: name, message: name, type: "File" });//リストに追加
                 if (VoiceChannel === undefined) {
