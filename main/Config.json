@@ -3,5 +3,6 @@
   "ServerID": "Discord Server ID",
   "GAS": "GAS",
   "Deny_ChannelId": [],
-  "pythonPath": "python3"
+  "pythonPath": "python3",
+  "SoundCloud_CLIENT_ID": "SoundCloud CLIENT ID"
 }
