@@ -122,7 +122,19 @@ async function play(interaction) {//----------メイン関数----------//
             url: "https://www.youtube.com/watch?v="
         });
 
+        let normality = false;
+        new Promise(() => {
+            delay(7000).then(() => {
+                if (!normality) {
+                    play(interaction);
+                    console.log("timeout");
+                    return;
+                }
+            })
+        });
+
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
+        normality = true;
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
         ErrorCount = 0;
@@ -162,6 +174,7 @@ async function play(interaction) {//----------メイン関数----------//
         }
     }
 }
+
 function reset() {
     client.user.setActivity();
     remove();
@@ -377,12 +390,12 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
             case "soundcloud.com":
                 const info = await sc.info(name);
                 if (info) {
-                    list.push({ url: name, title: info.title, duration: info.duration, type: "SoundCloud" });
+                    list.push({ url: info.url, title: info.title, duration: info.duration, type: "SoundCloud" });
                     if (VoiceChannel === undefined) {
                         join(channel);
                         play(interaction);
                     }
-                    send.play(info.title, name, info.thumbnail, info.duration, interaction);
+                    send.play(info.title, info.url, info.thumbnail, info.duration, interaction);
                 } else {
                     send.editReply("そのURLは再生できません", interaction);
                 }

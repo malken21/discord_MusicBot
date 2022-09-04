@@ -12,7 +12,6 @@ const send = require('./util/send');
 
 console.log("start");
 
-client.login(Config.TOKEN);
 
 client.on('ready', () => {
   client.application.commands.set(command.data, Config.ServerID);//コマンド生成
@@ -36,3 +35,5 @@ client.on("interactionCreate", interaction => {
     console.log(error);
   }
 });
+
+client.login(Config.TOKEN);

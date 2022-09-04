@@ -14,9 +14,9 @@ exports.info = async (url) => {//----------SoundCloud 開始----------//
         try {
             scdl.getInfo(url, CLIENT_ID).then((data) => {
                 if (data.artwork_url != null) {
-                    resolve({ title: data.title, thumbnail: data.artwork_url, duration: text.ms(data.full_duration) });
+                    resolve({ url: data.permalink_url, title: data.title, thumbnail: data.artwork_url, duration: text.ms(data.full_duration) });
                 } else {
-                    resolve({ title: data.title, thumbnail: data.user.avatar_url, duration: text.ms(data.full_duration) });
+                    resolve({ url: data.permalink_url, title: data.title, thumbnail: data.user.avatar_url, duration: text.ms(data.full_duration) });
                 }
             });
         } catch {
