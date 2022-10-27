@@ -15,7 +15,9 @@ const text = require('../util/text');
 const nv = require('./NicoVideo');
 const yt = require('./YouTube');
 const sc = require('./SoundCloud');
+
 const player = createAudioPlayer();
+
 
 exports.ready = (data) => {
     client = data;
@@ -102,6 +104,7 @@ async function PlayFileCTM(channel, interaction) {
 let ErrorCount = 0;//エラー回数監視
 
 async function play(interaction) {//----------メイン関数----------//
+    let normality = false;
     try {
         switch (list[0].type) {
             case "YouTube":
@@ -122,7 +125,6 @@ async function play(interaction) {//----------メイン関数----------//
             url: "https://www.youtube.com/watch?v="
         });
 
-        let normality = false;
         new Promise(() => {
             delay(7000).then(() => {
                 if (!normality) {
@@ -154,6 +156,7 @@ async function play(interaction) {//----------メイン関数----------//
         }
     } catch (error) {
         console.log(error);
+        normality = true;
 
         ErrorCount++;
         if (ErrorCount <= 2) {
