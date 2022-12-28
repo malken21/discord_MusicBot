@@ -8,5 +8,5 @@
   "SoundCloud_CLIENT_ID": "SoundCloud CLIENT ID",
   "Bearer_TOKEN": "Twitter Bearer_TOKEN",
   "timeout": 50000,
-  "Reboot_Command": "bash reboot.sh"
+  "Reboot_Command": "screen -S MusicBot -X quit & screen -UAmdS MusicBot node index.js"
 }
