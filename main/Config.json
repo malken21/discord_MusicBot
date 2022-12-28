@@ -6,5 +6,7 @@
   "Deny_ChannelId": [],
   "pythonPath": "python3",
   "SoundCloud_CLIENT_ID": "SoundCloud CLIENT ID",
-  "Bearer_TOKEN": "Twitter Bearer_TOKEN"
+  "Bearer_TOKEN": "Twitter Bearer_TOKEN",
+  "timeout": 50000,
+  "Reboot_Command": "bash reboot.sh"
 }
