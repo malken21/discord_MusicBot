@@ -1,5 +1,5 @@
 #!/usr/bin/bash
 
 screen -S MusicBot -X quit
-cd /home/toroserver/discord/music-bot
+cd ディレクトリ
 screen -UAmdS MusicBot node index.js
