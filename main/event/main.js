@@ -8,6 +8,8 @@ let loop = false;//ループ再生trueかfalseかどうか
 let VoiceChannel = undefined;//joinVoiceChannel
 let ChannelID = undefined;
 
+const reboot = require('../util/reboot');
+const timer = require('../util/timer');
 const req = require('../util/request');
 const cmd = require('../util/command');
 const send = require('../util/send');
@@ -17,8 +19,10 @@ const yt = require('./YouTube');
 const sc = require('./SoundCloud');
 const tw = require('./Twitter');
 
+const fl = require('../util/file');
 const player = createAudioPlayer();
 
+const { timeout } = require("../Config.json");
 
 function ready(data) {
     client = data;
@@ -45,6 +49,13 @@ function onCommand(interaction) {
         case "list"://-----list-----//
             ListCMD(interaction);
             break;
+        case "timer"://-----timer-----//
+            TimerCMD(interaction);
+            break;
+        case "reboot"://-----reboot-----//
+            RebootCMD(interaction);
+            break;
+
         case "join"://-----join-----//
             JoinCMD(channel, interaction);
             break;
@@ -106,6 +117,7 @@ let ErrorCount = 0;//エラー回数監視
 
 async function play(interaction) {//----------メイン関数----------//
     let normality = false;
+    if (list[0] == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき list[0] が undefined になっていてエラー落ちしないようにするための return
     try {
         switch (list[0].type) {
             case "YouTube":
@@ -130,7 +142,7 @@ async function play(interaction) {//----------メイン関数----------//
         });
 
         new Promise(() => {
-            delay(7000).then(() => {
+            delay(timeout).then(() => {
                 if (!normality) {
                     play(interaction);
                     console.log("timeout");
@@ -141,6 +153,7 @@ async function play(interaction) {//----------メイン関数----------//
 
         await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
         normality = true;
+        timer.start();
         await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
 
         ErrorCount = 0;
@@ -201,6 +214,7 @@ function remove() {
     VoiceChannel.destroy();
     VoiceChannel = undefined;
     ChannelID = undefined;
+    timer.end();
 }
 function delay(ms) {//-----待機-----//
     return new Promise(function (resolve) {
@@ -208,8 +222,14 @@ function delay(ms) {//-----待機-----//
     });
 }
 async function YouTube() {//----------YouTube----------//
-    const stream = await yt.stream(list[0].id);
-    const resource = createAudioResource(stream);
+    const url = list[0].id;
+    if (!await yt.isAllow(url)) {
+        return;
+    };
+    const stream = await yt.stream(url);
+    await fl.pipe("youtube.mp4", stream);
+    const resource = createAudioResource(fl.stream("youtube.mp4"));
+    if (VoiceChannel == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき VoiceChannel が undefined になっていてエラー落ちしないようにするための return
     VoiceChannel.subscribe(player);
     player.play(resource);
 }
@@ -476,6 +496,20 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
         }
         cmd.playlist(result_GL, interaction);
     }
+}
+
+async function TimerCMD(interaction) {//-----timer-----コマンド//
+    const data = timer.look()
+    if (data == undefined) {
+        send.reply("音楽は再生されていません", interaction);
+    } else {
+        send.reply(`現在再生中の曲 再生からの経過時間\n${text.ms(data)}`, interaction);
+    }
+}
+
+async function RebootCMD(interaction) {//-----reboot-----コマンド//
+    send.reply("再起動します..", interaction);
+    reboot.start();
 }
 
 module.exports = {

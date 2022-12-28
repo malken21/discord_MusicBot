@@ -47,6 +47,14 @@ const commands = [{
     description: "音楽をすべて表示"
 },
 {
+    name: "timer",
+    description: "現在 再生中の曲が始まってから どのくらい時間が経過したか確認する"
+},
+{
+    name: "reboot",
+    description: "Botを再起動させる"
+},
+{
     name: "PlayFile",
     type: "MESSAGE"
 }];

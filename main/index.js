@@ -20,17 +20,6 @@ client.on('ready', () => {
 });
 
 client.on("interactionCreate", interaction => {
-  if (![
-    "PlayFile",
-    "list",
-    "delete",
-    "stop",
-    "join",
-    "loop",
-    "skip",
-    "playlist",
-    "play"
-  ].includes(interaction.commandName)) return;
   if (isDenyChannel(interaction.channelId, Config)) {
     send.private("このチャンネルでは実行できません", interaction)
     return;

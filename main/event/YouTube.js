@@ -1,13 +1,29 @@
 const ytdl = require('ytdl-core');
 
-exports.stream = (url) => {//----------YouTube 開始----------//
+function stream(url) {//----------YouTube 開始----------//
     return new Promise((resolve) => {
-        const stream = ytdl(url, {
+        const data = ytdl(url, {
             filter: "audioonly",
-            quality: 'highestaudio',
+            quality: 'lowestaudio',
             highWaterMark: 1 << 25,
             requestOptions: { timeout: 500 }
         });
-        resolve(stream)
+        resolve(data);
     });
+}
+
+function isAllow(url) {
+    return new Promise(async (resolve) => {
+        try {
+            await ytdl.getBasicInfo(url);
+            resolve(true);
+        } catch (error) {
+            resolve(false);
+        }
+    });
+}
+
+module.exports = {
+    stream: stream,
+    isAllow: isAllow
 }
