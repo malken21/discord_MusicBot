@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
-cd /home/toroserver/discord/music-bot
+cd ディレクトリ
 screen -UAmdS MusicBot node index.js
