@@ -1,5 +1,6 @@
 
 const { entersState, AudioPlayerStatus, createAudioResource, createAudioPlayer, joinVoiceChannel, StreamType } = require('@discordjs/voice');
+const { createReadStream } = require('node:fs');
 
 let client;
 
@@ -118,7 +119,7 @@ let ErrorCount = 0;//エラー回数監視
 let isPlaying = false;
 
 async function play(interaction) {//----------メイン関数----------//
-    let normality = false;
+    console.log(list[0])
     if (list[0] == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき list[0] が undefined になっていてエラー落ちしないようにするための return
     try {
         switch (list[0].type) {
@@ -229,27 +230,32 @@ function delay(ms) {//-----待機-----//
 
 
 async function YouTube() {//----------YouTube----------//
+    console.log("Play!!", "YouTube", list[0].url)
     if (isPlaying) return;
     const url = list[0].id;
     if (!await yt.isAllow(url)) {
         return;
     };
-    const stream = await yt.stream(url);
-    if (isPlaying) return;
-    await fl.pipe("youtube.mp4", stream);
-    if (isPlaying) return;
-    const resource = createAudioResource(fl.stream("youtube.mp4"));
+    const resource = createAudioResource(await yt.stream(url));
     if (VoiceChannel == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき VoiceChannel が undefined になっていてエラー落ちしないようにするための return
     VoiceChannel.subscribe(player);
     player.play(resource);
 }
 async function File() {//----------ファイル----------//
+    console.log("Play!!", "File", list[0].url)
     const stream = await req.stream(list[0].url);
-    const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
+    const resource = createAudioResource(createReadStream('./my_file.ogg'), {
+        inputType: StreamType.OggOpus,
+    });
+
+    //createAudioResource(stream);
+    console.log(VoiceChannel)
+    await VoiceChannel.subscribe(player);
     player.play(resource);
+    console.log(player)
 }
 async function NicoVideo() {//----------ニコニコ----------//
+    console.log("Play!!", "NicoVideo", list[0].url)
     const json = await nv.start(list[0].url);
     const stream = await req.stream(json.url);
     const resource = createAudioResource(stream);
@@ -261,6 +267,7 @@ async function NicoVideo() {//----------ニコニコ----------//
     nv.end();
 }
 async function SoundCloud() {
+    console.log("Play!!", "SoundCloud", list[0].url)
     const stream = await sc.stream(list[0].url);
     const resource = createAudioResource(stream);
     VoiceChannel.subscribe(player);

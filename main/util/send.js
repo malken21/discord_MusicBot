@@ -1,21 +1,21 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 exports.reply = (text, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setDescription(text)
     interaction.reply({ embeds: [embed] });
 }
 exports.editReply = (text, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setDescription(text)
     interaction.editReply({ embeds: [embed] });
 }
 exports.list = (name, time, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setDescription(`再生リストを表示しました`)
@@ -26,7 +26,7 @@ exports.list = (name, time, interaction) => {
     interaction.editReply({ embeds: [embed] });
 }
 exports.play = (title, url, thumbnail, duration, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setThumbnail(thumbnail)
@@ -37,7 +37,7 @@ exports.play = (title, url, thumbnail, duration, interaction) => {
     interaction.editReply({ embeds: [embed] });
 }
 exports.playlist = (title, id, thumbnail, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setThumbnail(thumbnail)
@@ -46,7 +46,7 @@ exports.playlist = (title, id, thumbnail, interaction) => {
 }
 
 exports.playfile = (text, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setDescription(text)
@@ -54,7 +54,7 @@ exports.playfile = (text, interaction) => {
 }
 
 exports.private = (text, interaction) => {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setColor('ffa500')
         .setTitle(`音楽bot`)
         .setDescription(text)

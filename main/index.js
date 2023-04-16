@@ -1,7 +1,8 @@
 console.log("load");
+const { Client, GatewayIntentBits, Partials, Events, ChatInputCommandInteraction } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] });
 
-const { Client, Intents } = require("discord.js");
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, 'GUILD_VOICE_STATES'] });
+const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js');
 
 const Config = require("./Config.json");
 
@@ -13,13 +14,13 @@ const send = require('./util/send');
 console.log("start");
 
 
-client.on('ready', () => {
+client.on(Events.ClientReady, () => {
   client.application.commands.set(commands, Config.ServerID);//コマンド生成
   ready(client)
   console.log(`login: (${client.user.tag})`);
 });
 
-client.on("interactionCreate", interaction => {
+client.on(Events.InteractionCreate, interaction => {
   if (isDenyChannel(interaction.channelId, Config)) {
     send.private("このチャンネルでは実行できません", interaction)
     return;
@@ -28,7 +29,7 @@ client.on("interactionCreate", interaction => {
     if (interaction.isCommand()) {
       onCommand(interaction);
     }
-    if (interaction.isContextMenu()) {
+    if (interaction.isContextMenuCommand()) {
       onContextMenu(interaction);
     }
   } catch (error) {

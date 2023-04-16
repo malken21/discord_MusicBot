@@ -1,12 +1,13 @@
 const send = require('./send');
 const text = require('../util/text');
+const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js');
 
 
 const commands = [{
     name: "play",
     description: "YouTubeの音楽を再生",
     options: [{
-        type: "STRING",
+        type: ApplicationCommandOptionType.String,
         name: "name",
         description: "動画のURLまたは検索したい音楽",
         required: true
@@ -16,7 +17,7 @@ const commands = [{
     name: "playlist",
     description: "YouTubeのプレイリストを再生",
     options: [{
-        type: "STRING",
+        type: ApplicationCommandOptionType.String,
         name: "name",
         description: "プレイリストのURLまたは検索したいプレイリスト",
         required: true
@@ -56,7 +57,7 @@ const commands = [{
 },
 {
     name: "PlayFile",
-    type: "MESSAGE"
+    type: ApplicationCommandType.Message
 }];
 
 function play(Video, interaction) {
