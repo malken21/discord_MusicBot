@@ -1,5 +1,5 @@
 {
-  "name": "discord_musicbot-main",
+  "name": "discord_musicbot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "discord.js": "^14.9.0",
     "ffmpeg-static": "^5.1.0",
     "python-shell": "^5.0.0",
-    "tweetnacl": "^1.0.3",
-    "xmljson": "^0.2.0"
+    "soundcloud-downloader": "^1.0.0",
+    "tweetnacl": "^1.0.3"
   }
 }

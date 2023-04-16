@@ -41,13 +41,28 @@ exports.NVInfo = async (id) => {//----------ニコニコ動画の詳細情報を
                 data += chunk;
             });
             res.on("end", () => {
-                xmljson.to_json(data, function (err, json) {
-                    if (err) {
-                        return err;
-                    }
-                    resolve(json.nicovideo_thumb_response);
-                });
+                resolve(xmlTojson(data).nicovideo_thumb_response);
             });
         });
     });
+}
+
+function xmlTojson(xmlArray) {
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(xmlArray, "application/xml");
+    let nl = doc.getElementsByTagName("item");
+    let matches = nl.length;
+
+    let jsonData = [];
+    for (let i = 0; i < matches; i++) {
+        let e = nl.item(i);
+        let youso = [];
+        for (let j = 0; j < Math.floor(e.childNodes.length / 2); j++) {
+            let type = e.getElementsByTagName(e.childNodes[1 + j * 2].nodeName);
+            youso.push(type);
+        }
+        let buf = { type: youso[0].item(0).textContent, japan: youso[1].item(0).textContent, us: youso[2].item(0).textContent };
+        jsonData.push(buf);
+    }
+    return jsonData;
 }

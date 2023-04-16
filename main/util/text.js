@@ -1,5 +1,3 @@
-const eaw = require("eastasianwidth");
-
 exports.PT = (duration) => {
     let H, M, S;
     H = Number(duration.split(/PT|H/g)[1]);
@@ -27,8 +25,8 @@ exports.PT = (duration) => {
 
 exports.embedTitle = (before) => {
     let after = before;
-    if (eaw.length(before) > 48) {
-        after = eaw.slice(before, 0, 45) + "..."
+    if (before > 48) {
+        after = before.slice(0, 45) + "..."
     }
     return after;
 }
