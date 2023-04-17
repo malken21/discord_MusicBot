@@ -10,14 +10,10 @@ const req = require('../util/request');
 const cmd = require('../util/command');
 const send = require('../util/send');
 const text = require('../util/text');
-const nv = require('./NicoVideo');
-const yt = require('./YouTube');
 const sc = require('./SoundCloud');
 const tw = require('./Twitter');
+const Config = require("../../config.json");
 
-const fl = require('../util/file');
-
-const { timeout } = require('../../config.json');
 
 function ready(data) {
     client = data;
@@ -108,8 +104,6 @@ async function PlayFileCTM(channel, interaction) {
 
 //----------メイン稼働部----------//
 
-let isPythonPlaying = false;
-
 let isPlaying = false;
 
 async function play(interaction) {//----------メイン関数----------//
@@ -118,19 +112,19 @@ async function play(interaction) {//----------メイン関数----------//
     try {
         switch (list[0].type) {
             case "YouTube":
-                YouTube();
+                if (!YouTube()) return;
                 break;
             case "File":
-                File();
+                if (!File()) return;
                 break;
             case "NicoVideo":
-                NicoVideo();
+                if (!NicoVideo()) return;
                 break;
             case "SoundCloud":
-                SoundCloud();
+                if (!SoundCloud()) return;
                 break;
             case "Twitter":
-                File();
+                if (!File()) return;
                 break;
         }
         client.user.setActivity(list[0].title, {
@@ -138,13 +132,12 @@ async function play(interaction) {//----------メイン関数----------//
             url: "https://www.youtube.com/watch?v="
         });
         isPlaying = true;
-        isPythonPlaying = true;
         timer.start();
 
-        do { await delay(1000); }
-        while (isPythonPlaying)
-
-        isPlaying = false;
+        do {
+            await delay(1000);
+        }
+        while (isPlaying == true)
 
         if (loop) {
             if (interaction.guild.channels.cache.get(ChannelID).members.size === 1) {
@@ -195,19 +188,19 @@ function delay(ms) {//-----待機-----//
 async function YouTube() {//----------YouTube----------//
     console.log(list[0])
     console.log("Play!!", "YouTube", `https://youtu.be/${list[0].id}`);
-    req.play(`https://youtu.be/${list[0].id}`, ChannelID);
+    return await req.play(`https://youtu.be/${list[0].id}`, ChannelID);
 }
 async function File() {//----------ファイル----------//
     console.log("Play!!", "File", list[0].url);
-    req.play(list[0].url, ChannelID);
+    return await req.play(list[0].url, ChannelID);
 }
 async function NicoVideo() {//----------ニコニコ----------//
     console.log("Play!!", "NicoVideo", list[0].url);
-    req.play(list[0].url, ChannelID);
+    return await req.play(list[0].url, ChannelID);
 }
 async function SoundCloud() {
     console.log("Play!!", "SoundCloud", list[0].url);
-    req.play(list[0].url, ChannelID);
+    return await req.play(list[0].url, ChannelID);
 }
 //----------スラッシュコマンド----------//
 
@@ -470,3 +463,37 @@ module.exports = {
     onCommand: onCommand,
     onContextMenu: onContextMenu
 }
+
+
+//----------Server----------//
+const hostname = Config.ip.Nodejs;
+const port = Config.port.Nodejs;
+
+// httpモジュールを読み込む
+const http = require('http');
+
+// サーバーを作成する
+const server = http.createServer((req, res) => {
+    // レスポンスヘッダーにContent-Typeを設定する
+    res.setHeader('Content-Type', 'text/plain');
+    // リクエストのパスによってレスポンスボディを変える
+    if (req.url === '/end') {
+        // /endパスの場合
+        isPlaying = false
+        console.log("end!!")
+        res.write('end');
+    } else if (req.url === '/error') {
+        // /errorパスの場合
+        res.write('error');
+    } else {
+        // それ以外のパスの場合
+        res.write('404');
+    }
+    // レスポンスを終了する
+    res.end();
+});
+
+server.listen(port, hostname, () => {
+    console.log(`Server Start!!`);
+});
+//----------Server----------//

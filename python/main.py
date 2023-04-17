@@ -1,6 +1,7 @@
 import discord
 import json
 import python.util.download as download
+import python.util.request as request
 import threading
 import asyncio
 from discord.ext import tasks
@@ -31,7 +32,7 @@ class MyClient(discord.Client):
     # 起動が完了したら
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
-        import python.server as server
+        import python.util.server as server
         thread = threading.Thread(
             target=server.setup
         )
@@ -60,8 +61,11 @@ class MyClient(discord.Client):
             voice_client.play(discord.FFmpegPCMAudio(download.load(
                 url
             )))
+            while voice_client.is_playing():
+                await asyncio.sleep(1)
             del playList[0]
             isPlaying = False
+            print(request.end())
 
 
 intents = discord.Intents.all()
