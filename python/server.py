@@ -2,10 +2,18 @@ import http.server
 import python.main as main
 from urllib import parse
 import base64
-import asyncio
-import threading
+import json
 
-discord = None
+
+# 読み込み
+def read(path):
+    with open(path, 'r', encoding="utf-8") as file:
+        return json.load(file)
+
+
+CONFIG = read("config.json")
+PORT = CONFIG["port"]["Python"]
+IP = CONFIG["ip"]["Python"]
 
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -27,7 +35,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             ])
 
         else:
-            # それ以外の場合はデフォルトの処理を行う
+            # それ以外の場合は404の処理を行う
             self.send_response(404)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
@@ -35,7 +43,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 
 # ポート番号は任意
-server = http.server.HTTPServer(("", 8000), MyHandler)
+server = http.server.HTTPServer((IP, PORT), MyHandler)
 
 
 def setup():
