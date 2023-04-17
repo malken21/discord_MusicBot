@@ -1,6 +1,6 @@
 console.log("load");
 const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates], partials: [Partials.Channel] });
 
 const Config = require("../config.json");
 

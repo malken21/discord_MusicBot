@@ -22,7 +22,7 @@ function ready(data) {
 const url = require('url');
 
 function onCommand(interaction) {
-    const channel = interaction.member.fetch().voice.channel;
+    const channel = interaction.member.voice.channel;
     if (!channel) {
         send.reply("ボイスチャンネルに入ってから入力してください", interaction);
         return;
