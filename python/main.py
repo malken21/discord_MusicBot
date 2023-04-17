@@ -1,7 +1,9 @@
 import discord
 import json
 import python.download as download
-import python.server as server
+import threading
+import asyncio
+from discord.ext import tasks
 
 
 # 読み込み
@@ -17,27 +19,54 @@ CONFIG = read("config.json")
 TOKEN = CONFIG["TOKEN"]
 GUILD = int(CONFIG["GUILD"])
 
+loop = asyncio.get_event_loop()
+
+playList = []
+isPlaying = False
+
+voice_client = None
+
 
 class MyClient(discord.Client):
     # 起動が完了したら
     async def on_ready(self):
         print(f'Logged on as {self.user}!')
+        import python.server as server
+        thread = threading.Thread(
+            target=server.setup
+        )
+        thread.start()
+        self.check_playList.start()
 
+    @tasks.loop(seconds=1)
+    async def check_playList(self):
+        global isPlaying
+        if (isPlaying == False and len(playList) != 0):
 
-async def play(voice_channel: int, url: str):
-    # ボイスチャンネル取得
-    channel = client.get_guild(GUILD).get_channel(voice_channel)
-    # ボイスチャンネルに入る
-    voice_client = await channel.connect()
+            voice_channel = playList[0][0]
+            url = playList[0][1]
 
-    # ビデオ or サウンド 再生
-    voice_client.play(discord.FFmpegPCMAudio(download.load(
-        url
-    )))
+            # ボイスチャンネル取得
+            channel = client.get_guild(GUILD).get_channel(voice_channel)
+            # ボイスチャンネルに入る
+
+            global voice_client
+            if (voice_client == None):
+                voice_client = await channel.connect()
+
+            print(voice_channel, url)
+
+            # ビデオ or サウンド 再生
+            voice_client.play(discord.FFmpegPCMAudio(download.load(
+                url
+            )))
+            del playList[0]
+            isPlaying = False
 
 
 intents = discord.Intents.all()
-
 client = MyClient(intents=intents)
 
-client.run(TOKEN)
+
+def setup():
+    client.run(TOKEN)

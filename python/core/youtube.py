@@ -1,7 +1,7 @@
 import os
 from yt_dlp import YoutubeDL
 
-filename = "youtube.webm"
+filename = "cache/youtube.webm"
 ydl_opts = {"format": "bestaudio", "outtmpl": filename}
 
 

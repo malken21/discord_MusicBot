@@ -1,7 +1,7 @@
 import os
 from yt_dlp import YoutubeDL
 
-filename = "soundcloud.webm"
+filename = "cache/soundcloud.webm"
 ydl_opts = {"outtmpl": filename}
 
 

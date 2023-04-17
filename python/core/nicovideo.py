@@ -1,7 +1,7 @@
 import os
 from yt_dlp import YoutubeDL
 
-filename = "nicovideo.webm"
+filename = "cache/nicovideo.webm"
 ydl_opts = {"outtmpl": filename}
 
 
