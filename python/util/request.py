@@ -15,3 +15,7 @@ IP = CONFIG["ip"]["Nodejs"]
 
 def end():
     return requests.get(f"http://{IP}:{PORT}/end")
+
+
+def error():
+    return requests.get(f"http://{IP}:{PORT}/error")

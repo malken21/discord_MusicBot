@@ -56,16 +56,19 @@ class MyClient(discord.Client):
                 voice_client = await channel.connect()
 
             print(voice_channel, url)
-
-            # ビデオ or サウンド 再生
-            voice_client.play(discord.FFmpegPCMAudio(download.load(
-                url
-            )))
-            while voice_client.is_playing():
-                await asyncio.sleep(1)
-            del playList[0]
-            isPlaying = False
-            print(request.end())
+            try:
+                # ビデオ or サウンド 再生
+                voice_client.play(discord.FFmpegPCMAudio(download.load(
+                    url
+                )))
+                while voice_client.is_playing():
+                    await asyncio.sleep(1)
+                del playList[0]
+                isPlaying = False
+                print(request.end())
+            except ZeroDivisionError:
+                print('Error')
+                print(request.error())
 
 
 intents = discord.Intents.all()

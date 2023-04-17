@@ -105,6 +105,7 @@ async function PlayFileCTM(channel, interaction) {
 //----------メイン稼働部----------//
 
 let isPlaying = false;
+let isError = false;
 
 async function play(interaction) {//----------メイン関数----------//
     console.log(list[0])
@@ -136,6 +137,18 @@ async function play(interaction) {//----------メイン関数----------//
 
         do {
             await delay(1000);
+            if (isError) {
+                console.log(error);
+
+                client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${text.ListURL(list[0])}`)
+                list.shift();
+                if (list.length === 0) {
+                    reset();
+                } else {
+                    play(interaction);
+                }
+                return
+            }
         }
         while (isPlaying == true)
 
@@ -479,12 +492,14 @@ const server = http.createServer((req, res) => {
     // リクエストのパスによってレスポンスボディを変える
     if (req.url === '/end') {
         // /endパスの場合
-        isPlaying = false
+        isPlaying = false;
         console.log("end!!")
         res.write('end');
     } else if (req.url === '/error') {
         // /errorパスの場合
         res.write('error');
+        isError = true;
+        console.log("error!!")
     } else {
         // それ以外のパスの場合
         res.write('404');
