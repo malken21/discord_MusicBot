@@ -46,9 +46,9 @@ class MyClient(discord.Client):
     @tasks.loop(seconds=1)
     async def check_playList(self):
         global isPlaying, isSkip, voice_client, removeCount, isStop
-        if (isStop):
-            voice_client.disconnect()
-            voice_channel = None
+        if (isStop and voice_client != None):
+            await voice_client.disconnect()
+            voice_client = None
             isStop = False
             return
         if (isPlaying == False and len(playList) != 0):
