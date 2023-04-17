@@ -143,6 +143,7 @@ async function play(interaction) {//----------メイン関数----------//
                 client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${text.ListURL(list[0])}`)
                 list.shift();
                 if (list.length === 0) {
+                    req.stop()
                     reset();
                 } else {
                     play(interaction);
@@ -160,6 +161,7 @@ async function play(interaction) {//----------メイン関数----------//
             list.shift();
         }
         if (list.length === 0) {
+            req.stop()
             reset();
         } else {
             await delay(1000);
@@ -236,7 +238,7 @@ function SkipCMD(interaction) {//-----skip-----コマンド//
     } else {
         send.reply("スキップしました", interaction);
         if (loop === true) list.shift()
-        req.stop();
+        req.skip();
     }
 }
 function StopCMD(interaction) {//-----stop-----コマンド//
@@ -245,7 +247,7 @@ function StopCMD(interaction) {//-----stop-----コマンド//
     } else {
         send.reply("ストップしました", interaction);
         list = [];
-        req.stop();
+        req.skip();
     }
 }
 
@@ -300,7 +302,7 @@ function DeleteCMD(channel, interaction) {//-----delete-----コマンド//
         remove();
     } else {
         list = [];
-        req.stop();
+        req.skip();
     }
 }
 async function PlayCMD(channel, interaction) {//-----play-----コマンド//

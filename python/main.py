@@ -25,6 +25,7 @@ loop = asyncio.get_event_loop()
 
 playList = []
 isPlaying = False
+isSkip = False
 isStop = False
 
 voice_client = None
@@ -44,15 +45,12 @@ class MyClient(discord.Client):
 
     @tasks.loop(seconds=1)
     async def check_playList(self):
-        global isPlaying, isStop, voice_client, removeCount
-        if (voice_client != None and isPlaying == False):
-            print(removeCount)
-            if (removeCount >= 50):
-                await voice_client.disconnect()
-                voice_client = None
-                removeCount = 0
-                return
-            removeCount += 1
+        global isPlaying, isSkip, voice_client, removeCount
+        if (isStop):
+            voice_client.disconnect()
+            voice_channel = None
+            isStop = False
+            return
         if (isPlaying == False and len(playList) != 0):
             removeCount = 0
 
@@ -74,12 +72,11 @@ class MyClient(discord.Client):
                 )))
                 while voice_client.is_playing():
                     await asyncio.sleep(1)
-                    if (isStop):
-                        await voice_client.disconnect()
+                    if (isSkip):
                         del playList[0]
+                        voice_client.stop()
                         isPlaying = False
-                        isStop = False
-                        voice_client = None
+                        isSkip = False
                         print(request.end())
                         return
                 del playList[0]
