@@ -25,6 +25,7 @@ loop = asyncio.get_event_loop()
 
 playList = []
 isPlaying = False
+isStop = False
 
 voice_client = None
 
@@ -42,7 +43,7 @@ class MyClient(discord.Client):
 
     @tasks.loop(seconds=1)
     async def check_playList(self):
-        global isPlaying
+        global isPlaying, isStop
         if (isPlaying == False and len(playList) != 0):
 
             voice_channel = playList[0][0]
@@ -77,6 +78,11 @@ class MyClient(discord.Client):
 
 intents = discord.Intents.all()
 client = MyClient(intents=intents)
+
+
+def stop():
+    global isStop
+    isStop = True
 
 
 def setup():

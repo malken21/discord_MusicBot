@@ -43,10 +43,11 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
         else:
             # それ以外の場合は404の処理を行う
-            self.send_response(404)
+            self.send_response(200)
             self.send_header("Content-type", "text/plain")
             self.end_headers()
-            self.wfile.write(b"404")
+            self.wfile.write(b"none")
+            main.stop()
 
 
 # ポート番号は任意
