@@ -1,5 +1,7 @@
 #!/bin/bash
 cd $(dirname $0)
-
-python3 index.py &
-node index.js &
+npm i
+python3 -m pip install -U yt_dlp
+python3 -m pip install -U requests
+python3 -m pip install -U discord.py[voice]
+sudo apt install ffmpeg
