@@ -5,6 +5,7 @@ import python.util.request as request
 import threading
 import asyncio
 from discord.ext import tasks
+import traceback
 
 
 # 読み込み
@@ -66,9 +67,12 @@ class MyClient(discord.Client):
                 del playList[0]
                 isPlaying = False
                 print(request.end())
-            except ZeroDivisionError:
-                print('Error')
+            except Exception as e:
+                print(type(e))
+                print(traceback.format_exc())
                 print(request.error())
+                del playList[0]
+                isPlaying = False
 
 
 intents = discord.Intents.all()

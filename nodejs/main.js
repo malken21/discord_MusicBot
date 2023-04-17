@@ -13,7 +13,8 @@ console.log("start");
 
 
 client.on(Events.ClientReady, () => {
-  client.application.commands.set(commands, Config.ServerID);//コマンド生成
+  client.application.commands.set(commands, Config.GUILD);//コマンド生成
+  client.application.commands.set([]);
   ready(client)
   console.log(`login: (${client.user.tag})`);
 });

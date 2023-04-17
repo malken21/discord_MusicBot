@@ -236,7 +236,7 @@ function SkipCMD(interaction) {//-----skip-----コマンド//
     } else {
         send.reply("スキップしました", interaction);
         if (loop === true) list.shift()
-        player.stop();
+        req.stop();
     }
 }
 function StopCMD(interaction) {//-----stop-----コマンド//
@@ -245,7 +245,7 @@ function StopCMD(interaction) {//-----stop-----コマンド//
     } else {
         send.reply("ストップしました", interaction);
         list = [];
-        player.stop();
+        req.stop();
     }
 }
 
@@ -300,7 +300,7 @@ function DeleteCMD(channel, interaction) {//-----delete-----コマンド//
         remove();
     } else {
         list = [];
-        player.stop();
+        req.stop();
     }
 }
 async function PlayCMD(channel, interaction) {//-----play-----コマンド//

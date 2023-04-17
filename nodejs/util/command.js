@@ -32,16 +32,8 @@ const commands = [{
     description: "ループ再生の切り替え"
 },
 {
-    name: "join",
-    description: "ボットをボイスチャンネルに強制的に入れる"
-},
-{
     name: "stop",
     description: "音楽の再生をすべて終了"
-},
-{
-    name: "delete",
-    description: "ボットをボイスチャンネルから強制的に退出させる"
 },
 {
     name: "list",
@@ -50,10 +42,6 @@ const commands = [{
 {
     name: "timer",
     description: "現在 再生中の曲が始まってから どのくらい時間が経過したか確認する"
-},
-{
-    name: "reboot",
-    description: "Botを再起動させる"
 },
 {
     name: "PlayFile",

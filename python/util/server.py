@@ -34,6 +34,13 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 base64.b64decode(query["url"][0]).decode()
             ])
 
+        if url.path == "/stop":
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"stop")
+
         else:
             # それ以外の場合は404の処理を行う
             self.send_response(404)

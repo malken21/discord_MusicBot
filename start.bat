@@ -1,3 +1,3 @@
 @echo off
-python index.py
-pause
+start python.bat
+start nodejs.bat
