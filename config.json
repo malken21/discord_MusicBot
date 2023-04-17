@@ -1,0 +1,18 @@
+{
+  "TOKEN": "Discord bot TOKEN",
+  "GAS": "Google Apps Script",
+  "SoundCloud_CLIENT_ID": "SoundCloud CLIENT ID",
+  "Bearer_TOKEN": "Twitter API",
+  "Allow_ChannelId": [],
+  "Deny_ChannelId": [],
+  "Reboot_Command": "",
+  "GUILD": "Discord Server ID",
+  "port": {
+    "Python": 58232,
+    "Nodejs": 58233
+  },
+  "ip": {
+    "Python": "127.0.0.1",
+    "Nodejs": "127.0.0.1"
+  }
+}
