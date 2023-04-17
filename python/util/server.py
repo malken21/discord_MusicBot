@@ -40,6 +40,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/plain")
             self.end_headers()
             self.wfile.write(b"stop")
+            main.isStop = True
 
         else:
             # それ以外の場合は404の処理を行う
@@ -47,7 +48,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/plain")
             self.end_headers()
             self.wfile.write(b"none")
-            main.stop()
 
 
 # ポート番号は任意

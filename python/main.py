@@ -28,6 +28,7 @@ isPlaying = False
 isStop = False
 
 voice_client = None
+removeCount = 0
 
 
 class MyClient(discord.Client):
@@ -43,8 +44,17 @@ class MyClient(discord.Client):
 
     @tasks.loop(seconds=1)
     async def check_playList(self):
-        global isPlaying, isStop
+        global isPlaying, isStop, voice_client, removeCount
+        if (voice_client != None and isPlaying == False):
+            print(removeCount)
+            if (removeCount >= 50):
+                await voice_client.disconnect()
+                voice_client = None
+                removeCount = 0
+                return
+            removeCount += 1
         if (isPlaying == False and len(playList) != 0):
+            removeCount = 0
 
             voice_channel = playList[0][0]
             url = playList[0][1]
@@ -53,7 +63,6 @@ class MyClient(discord.Client):
             channel = client.get_guild(GUILD).get_channel(voice_channel)
             # ボイスチャンネルに入る
 
-            global voice_client
             if (voice_client == None):
                 voice_client = await channel.connect()
 
@@ -65,6 +74,14 @@ class MyClient(discord.Client):
                 )))
                 while voice_client.is_playing():
                     await asyncio.sleep(1)
+                    if (isStop):
+                        await voice_client.disconnect()
+                        del playList[0]
+                        isPlaying = False
+                        isStop = False
+                        voice_client = None
+                        print(request.end())
+                        return
                 del playList[0]
                 isPlaying = False
                 print(request.end())
@@ -78,11 +95,6 @@ class MyClient(discord.Client):
 
 intents = discord.Intents.all()
 client = MyClient(intents=intents)
-
-
-def stop():
-    global isStop
-    isStop = True
 
 
 def setup():
