@@ -2,7 +2,6 @@ let client;
 
 let list = [];//再生する曲一覧
 let loop = false;//ループ再生trueかfalseかどうか
-let VoiceChannel = undefined;//joinVoiceChannel
 let ChannelID = undefined;
 
 const reboot = require('../util/reboot');
@@ -99,7 +98,7 @@ async function PlayFileCTM(channel, interaction) {
             return;
         }
         list = list.concat(data);//リストに追加
-        if (VoiceChannel === undefined) {
+        if (ChannelID === undefined) {
             join(channel);
             play(interaction);
         }
@@ -109,13 +108,13 @@ async function PlayFileCTM(channel, interaction) {
 
 //----------メイン稼働部----------//
 
-let ErrorCount = 0;//エラー回数監視
+let isPythonPlaying = false;
 
 let isPlaying = false;
 
 async function play(interaction) {//----------メイン関数----------//
     console.log(list[0])
-    if (list[0] == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき list[0] が undefined になっていてエラー落ちしないようにするための return
+    if (list[0] == undefined) return;
     try {
         switch (list[0].type) {
             case "YouTube":
@@ -138,25 +137,14 @@ async function play(interaction) {//----------メイン関数----------//
             type: "STREAMING",
             url: "https://www.youtube.com/watch?v="
         });
-
-        new Promise(() => {
-            delay(timeout).then(() => {
-                if (!normality) {
-                    play(interaction);
-                    console.log("timeout");
-                    return;
-                }
-            })
-        });
-
-        await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
         isPlaying = true;
-        normality = true;
+        isPythonPlaying = true;
         timer.start();
-        await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
-        isPlaying = false;
 
-        ErrorCount = 0;
+        do { await delay(1000); }
+        while (isPythonPlaying)
+
+        isPlaying = false;
 
         if (loop) {
             if (interaction.guild.channels.cache.get(ChannelID).members.size === 1) {
@@ -173,17 +161,6 @@ async function play(interaction) {//----------メイン関数----------//
         }
     } catch (error) {
         console.log(error);
-        normality = true;
-
-        ErrorCount++;
-        if (ErrorCount <= 2) {
-            await delay(1000);
-            play(interaction);
-            return;
-        };
-
-        //-----3回以上連続でエラーだったらエラー通知-----//
-        ErrorCount = 0;
 
         client.channels.cache.get(interaction.channelId).send(`エラーが発生しました ${text.ListURL(list[0])}`)
         list.shift();
@@ -201,18 +178,9 @@ function reset() {
     loop = false;
 }
 function join(channel) {
-    VoiceChannel = joinVoiceChannel({
-        adapterCreator: channel.guild.voiceAdapterCreator,
-        channelId: channel.id,
-        guildId: channel.guild.id,
-        selfDeaf: false,
-        selfMute: false
-    });
     ChannelID = channel.id;
 }
 function remove() {
-    VoiceChannel.destroy();
-    VoiceChannel = undefined;
     ChannelID = undefined;
     timer.end();
 }
@@ -225,48 +193,21 @@ function delay(ms) {//-----待機-----//
 
 
 async function YouTube() {//----------YouTube----------//
-    console.log("Play!!", "YouTube", list[0].url)
-    if (isPlaying) return;
-    const url = list[0].id;
-    if (!await yt.isAllow(url)) {
-        return;
-    };
-    const resource = createAudioResource(await yt.stream(url));
-    if (VoiceChannel == undefined) return;// とても長いyoutubeの動画を流そうとしてタイムアウトでエラーが出たとき VoiceChannel が undefined になっていてエラー落ちしないようにするための return
-    VoiceChannel.subscribe(player);
-    player.play(resource);
+    console.log(list[0])
+    console.log("Play!!", "YouTube", `https://youtu.be/${list[0].id}`);
+    req.play(`https://youtu.be/${list[0].id}`, ChannelID);
 }
 async function File() {//----------ファイル----------//
-    console.log("Play!!", "File", list[0].url)
-    const stream = await req.stream(list[0].url);
-    const resource = createAudioResource(createReadStream('./my_file.ogg'), {
-        inputType: StreamType.OggOpus,
-    });
-
-    //createAudioResource(stream);
-    console.log(VoiceChannel)
-    await VoiceChannel.subscribe(player);
-    player.play(resource);
-    console.log(player)
+    console.log("Play!!", "File", list[0].url);
+    req.play(list[0].url, ChannelID);
 }
 async function NicoVideo() {//----------ニコニコ----------//
-    console.log("Play!!", "NicoVideo", list[0].url)
-    const json = await nv.start(list[0].url);
-    const stream = await req.stream(json.url);
-    const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
-    player.play(resource);
-
-    await entersState(player, AudioPlayerStatus.Playing, 10 * 1000);
-    await entersState(player, AudioPlayerStatus.Idle, 24 * 60 * 60 * 1000);
-    nv.end();
+    console.log("Play!!", "NicoVideo", list[0].url);
+    req.play(list[0].url, ChannelID);
 }
 async function SoundCloud() {
-    console.log("Play!!", "SoundCloud", list[0].url)
-    const stream = await sc.stream(list[0].url);
-    const resource = createAudioResource(stream);
-    VoiceChannel.subscribe(player);
-    player.play(resource);
+    console.log("Play!!", "SoundCloud", list[0].url);
+    req.play(list[0].url, ChannelID);
 }
 //----------スラッシュコマンド----------//
 
@@ -372,7 +313,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
         }
         result_GV.getVideo.main.type = "YouTube";
         list.push(result_GV.getVideo.main);//リストに追加
-        if (VoiceChannel === undefined) {
+        if (ChannelID === undefined) {
             join(channel);
             play(interaction);
         }
@@ -396,7 +337,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                     }
                     result_GV.getVideo.main.type = "YouTube";
                     list.push(result_GV.getVideo.main);//リストに追加
-                    if (VoiceChannel === undefined) {
+                    if (ChannelID === undefined) {
                         join(channel);
                         play(interaction);
                     }
@@ -422,7 +363,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                 const thumb = result.thumb;
 
                 list.push({ url: thumb.watch_url, title: thumb.title, duration: thumb.length, type: "NicoVideo" });//リストに追加
-                if (VoiceChannel === undefined) {
+                if (ChannelID === undefined) {
                     join(channel);
                     play(interaction);
                 }
@@ -434,7 +375,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                 const info = await sc.info(name);
                 if (info) {
                     list.push({ url: info.url, title: info.title, duration: info.duration, type: "SoundCloud" });
-                    if (VoiceChannel === undefined) {
+                    if (ChannelID === undefined) {
                         join(channel);
                         play(interaction);
                     }
@@ -452,7 +393,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                     return;
                 }
                 list.push({ url: VideoDeta.url, title: VideoDeta.title, message: name, duration: VideoDeta.duration, type: "Twitter" });//リストに追加
-                if (VoiceChannel === undefined) {
+                if (ChannelID === undefined) {
                     join(channel);
                     play(interaction);
                 }
@@ -460,7 +401,7 @@ async function PlayCMD(channel, interaction) {//-----play-----コマンド//
                 return
             default:
                 list.push({ url: name, title: name, message: name, type: "File" });//リストに追加
-                if (VoiceChannel === undefined) {
+                if (ChannelID === undefined) {
                     join(channel);
                     play(interaction);
                 }
@@ -481,7 +422,7 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
             result_SL.searchList.main[i].type = "YouTube";
         }
         list = list.concat(result_SL.searchList.main);//リストに追加
-        if (VoiceChannel === undefined) {
+        if (ChannelID === undefined) {
             join(channel);
             play(interaction);
         }
@@ -502,7 +443,7 @@ async function PlaylistCMD(channel, interaction) {//-----playlist-----コマン�
             result_GL.getList.main[i].type = "YouTube";
         }
         list = list.concat(result_GL.getList.main);//リストに追加
-        if (VoiceChannel === undefined) {
+        if (ChannelID === undefined) {
             join(channel);
             play(interaction);
         }

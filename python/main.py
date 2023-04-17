@@ -1,6 +1,6 @@
 import discord
 import json
-import python.download as download
+import python.util.download as download
 import threading
 import asyncio
 from discord.ext import tasks

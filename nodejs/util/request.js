@@ -1,7 +1,38 @@
 const https = require("https");
 const http = require("http");
 
+
 const Config = require('../../config.json');
+
+exports.play = (url, voice_channel) => {//----------音楽再生----------//
+    return new Promise((resolve) => {
+        // オプションを設定
+        const options = {
+            hostname: Config.ip.Python,
+            port: Config.port.Python,
+            path: `/play?voice_channel=${voice_channel}&url=${Buffer.from(url).toString('base64')}`,
+            method: 'GET'
+        };
+        console.log(options)
+
+        // リクエストを作成
+        const req = http.request(options, res => {
+            console.log(`statusCode: ${res.statusCode}`);
+            // レスポンスを受け取る
+            res.on('data', d => {
+                process.stdout.write(d);
+                resolve(true);
+            });
+        });
+        // エラー処理
+        req.on('error', error => {
+            console.error(error);
+            resolve(false);
+        });
+        // リクエストを終了
+        req.end();
+    });
+}
 
 exports.getGAS = (type, text) => {//----------Google Apps Script に接続----------//
     return new Promise((resolve) => {

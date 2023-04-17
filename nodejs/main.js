@@ -1,8 +1,6 @@
 console.log("load");
-const { Client, GatewayIntentBits, Partials, Events, ChatInputCommandInteraction } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Events } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] });
-
-const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js');
 
 const Config = require("../config.json");
 
