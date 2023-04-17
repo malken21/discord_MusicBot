@@ -1,8 +1,8 @@
-import core.youtube as youtube
-import core.nicovideo as nicovideo
-import core.soundcloud as soundcloud
-import core.twitter as twitter
-import core.file as file
+import python.core.youtube as youtube
+import python.core.nicovideo as nicovideo
+import python.core.soundcloud as soundcloud
+import python.core.twitter as twitter
+import python.core.file as file
 
 
 def load(url: str):

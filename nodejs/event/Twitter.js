@@ -1,8 +1,8 @@
 const https = require("https");
 
-const tx = require("../util/text")
+const tx = require("../util/text");
 
-const { Bearer_TOKEN } = require("../Config.json")
+const { Bearer_TOKEN } = require('../../config.json');
 
 const Twitter_TOKEN = {
     headers: {

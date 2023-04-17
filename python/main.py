@@ -1,6 +1,7 @@
 import discord
-import download
 import json
+import python.download as download
+import python.server as server
 
 
 # 読み込み
@@ -13,10 +14,8 @@ def read(path):
 CONFIG = read("config.json")
 
 # "config.json" のデータ 代入
-URL = CONFIG["URL"]
 TOKEN = CONFIG["TOKEN"]
 GUILD = int(CONFIG["GUILD"])
-VOICE_CHANNEL = int(CONFIG["VOICE_CHANNEL"])
 
 
 class MyClient(discord.Client):
@@ -25,15 +24,15 @@ class MyClient(discord.Client):
         print(f'Logged on as {self.user}!')
 
 
-async def play():
+async def play(voice_channel: int, url: str):
     # ボイスチャンネル取得
-    channel = client.get_guild(GUILD).get_channel(VOICE_CHANNEL)
+    channel = client.get_guild(GUILD).get_channel(voice_channel)
     # ボイスチャンネルに入る
     voice_client = await channel.connect()
 
     # ビデオ or サウンド 再生
     voice_client.play(discord.FFmpegPCMAudio(download.load(
-        URL
+        url
     )))
 
 

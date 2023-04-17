@@ -1,8 +1,7 @@
 const https = require("https");
 const http = require("http");
-const xmljson = require('xmljson');
 
-const Config = require('../Config.json');
+const Config = require('../../config.json');
 
 exports.getGAS = (type, text) => {//----------Google Apps Script に接続----------//
     return new Promise((resolve) => {

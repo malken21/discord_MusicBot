@@ -1,7 +1,3 @@
-
-const { entersState, AudioPlayerStatus, createAudioResource, createAudioPlayer, joinVoiceChannel, StreamType } = require('@discordjs/voice');
-const { createReadStream } = require('node:fs');
-
 let client;
 
 let list = [];//再生する曲一覧
@@ -21,9 +17,8 @@ const sc = require('./SoundCloud');
 const tw = require('./Twitter');
 
 const fl = require('../util/file');
-const player = createAudioPlayer();
 
-const { timeout } = require("../Config.json");
+const { timeout } = require('../../config.json');
 
 function ready(data) {
     client = data;

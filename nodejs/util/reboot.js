@@ -1,5 +1,5 @@
 const childProcess = require('child_process');
-const { Reboot_Command } = require(`../Config.json`)
+const { Reboot_Command } = require('../../config.json');
 
 function start() {
     childProcess.exec(Reboot_Command, (error, stdout, stderr) => {

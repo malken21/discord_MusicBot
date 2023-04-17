@@ -1,7 +1,7 @@
 const scdl = require('soundcloud-downloader').default
 const text = require('../util/text');
 
-const CLIENT_ID = require('../Config.json').SoundCloud_CLIENT_ID;
+const CLIENT_ID = require('../../config.json').SoundCloud_CLIENT_ID;
 
 exports.stream = (url) => {//----------SoundCloud 開始----------//
     return new Promise((resolve) => {

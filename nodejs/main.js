@@ -4,7 +4,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Part
 
 const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js');
 
-const Config = require("./Config.json");
+const Config = require("../config.json");
 
 
 const { onContextMenu, onCommand, ready } = require('./event/main');
