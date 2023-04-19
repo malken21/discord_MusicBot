@@ -14,6 +14,8 @@ const sc = require('./SoundCloud');
 const tw = require('./Twitter');
 const Config = require("../../config.json");
 
+const { ActivityType } = require('discord.js');
+
 
 function ready(data) {
     client = data;
@@ -129,7 +131,7 @@ async function play(interaction) {//----------メイン関数----------//
                 break;
         }
         client.user.setActivity(list[0].title, {
-            type: "STREAMING",
+            type: ActivityType.Streaming,
             url: "https://www.youtube.com/watch?v="
         });
         isPlaying = true;
